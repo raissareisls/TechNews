@@ -1,134 +1,50 @@
 <!doctype html>
 <html lang="pt-BR">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TechNews | Prévia da interface</title>
-<style>
-  body { margin:0; color-scheme:light dark; background:light-dark(#f3f2fa,#23222b); }
-  .preview-label { margin:14px 12px 0; text-align:center; font:14px system-ui,sans-serif; }
-  #technews-preview .tab-icon { font-size:20px; line-height:20px; }
-  @media (prefers-color-scheme:light) {
-    body { background:#f3f2fa; }
-  }
-</style>
-<p class="preview-label">Prévia da interface · Artigos de exemplo</p>
-<div id="technews-preview" class="viz-dotted-background">
-  <section class="phone" aria-label="Prévia do TechNews">
-    <div class="system" aria-hidden="true"><span>9:41</span><span>▴▴▴ ▰</span></div>
-    <main class="screen" aria-live="polite"></main>
-    <nav aria-label="Abas do aplicativo">
-      <button type="button" data-tab="feed" aria-pressed="true"><span class="tab-icon" aria-hidden="true">▤</span>Feed</button>
-      <button type="button" data-tab="saved" aria-pressed="false"><span class="tab-icon" aria-hidden="true">♧</span>Salvos</button>
-    </nav>
-    <div class="home" aria-hidden="true"></div>
-  </section>
-</div>
-<style>
-  #technews-preview { display:grid; place-items:center; padding:16px 8px; }
-  #technews-preview .phone {
-    color-scheme:light dark;
-    --paper:light-dark(#fff,#161618);
-    --ink:light-dark(#161619,#f5f5f8);
-    --quiet:light-dark(#63636d,#adadb8);
-    --line:light-dark(#dedee4,#36363e);
-    --tint:light-dark(#5e57cc,#a29aff);
-    width:min(100%,376px); border:1px solid var(--line); border-radius:32px;
-    overflow:hidden; background:var(--paper); color:var(--ink);
-    font:16px/1.38 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  }
-  #technews-preview .system { display:flex; align-items:center; justify-content:space-between; padding:12px 23px 6px; font-size:13px; font-weight:650; }
-  #technews-preview .system span:last-child { display:flex; align-items:center; gap:5px; }
-  #technews-preview .system svg { width:14px; height:14px; }
-  #technews-preview .screen { min-height:490px; padding:0 18px; }
-  #technews-preview h2 { color:var(--ink); font-size:34px; font-weight:700; letter-spacing:-.035em; margin:5px 0 12px; }
-  #technews-preview h3 { color:var(--ink); font-size:20px; font-weight:650; line-height:1.23; margin:0; }
-  #technews-preview p { margin:0; }
-  #technews-preview article { padding:12px 0; border-bottom:1px solid var(--line); }
-  #technews-preview button { font:inherit; background:none; border:0; color:inherit; text-align:inherit; cursor:pointer; }
-  #technews-preview .summary { width:100%; display:grid; gap:7px; padding:0; }
-  #technews-preview .author, #technews-preview .description { color:var(--quiet); font-size:15px; }
-  #technews-preview .author { font-weight:550; }
-  #technews-preview .cover {
-    display:grid; place-content:center; aspect-ratio:2.4; border-radius:10px; overflow:hidden;
-    background:linear-gradient(125deg,#20283c,#33315c); color:#eff2ff; margin-bottom:2px;
-    font:600 25px/1.2 ui-monospace,monospace; letter-spacing:-.05em;
-  }
-  #technews-preview .cover span { color:#b5b4ff; }
-  #technews-preview .favorite, #technews-preview .close { display:flex; align-items:center; gap:6px; min-height:44px; padding:0; color:var(--tint); }
-  #technews-preview nav { display:flex; border-top:1px solid var(--line); }
-  #technews-preview nav button { flex:1; min-height:48px; display:grid; place-content:center; justify-items:center; gap:3px; color:var(--quiet); font-size:11px; }
-  #technews-preview nav button[aria-pressed=true] { color:var(--tint); }
-  #technews-preview nav svg { width:20px; height:20px; }
-  #technews-preview .home { margin:6px auto 7px; height:4px; border-radius:8px; width:110px; background:var(--ink); }
-  #technews-preview .empty { min-height:360px; display:grid; align-content:center; justify-items:center; gap:10px; text-align:center; color:var(--quiet); }
-  #technews-preview .empty strong { color:var(--ink); }
-  #technews-preview .reader { display:grid; gap:16px; padding-bottom:20px; }
-  #technews-preview .reader header { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
-  #technews-preview .reader h3 { font-size:30px; }
-  #technews-preview .reader a { color:var(--tint); }
-</style>
-<script>
-(() => {
-  const root = document.getElementById('technews-preview');
-  const screen = root.querySelector('.screen');
-  const nav = root.querySelector('nav');
-  const articles = [
-    { title:'What happens when you await a Promise?', author:'Alex Morgan', description:'A practical look at how JavaScript handles async work and schedules the next step.', cover:'await fetch()', body:'An async function pauses at await and resumes when the promise settles. While it waits, the browser can respond to input and run other tasks.' },
-    { title:'A practical guide to Git bisect', author:'Sam Patel', description:'Find the commit that introduced a bug by narrowing down your history.', body:'Mark a known good commit and a known bad commit. Git then picks a midpoint to test. Each result narrows the range until you find the first commit that introduced the bug.' }
-  ];
-  const favorites = new Set();
-  let tab = 'feed';
-  let reading = null;
-  const preview = new URLSearchParams(location.search).get('tela');
-  if (preview === 'salvos') {
-    favorites.add(0);
-    tab = 'saved';
-  }
-  if (preview === 'leitura') reading = 0;
-  function render() {
-    nav.hidden = reading !== null;
-    nav.style.display = reading === null ? '' : 'none';
-    for (const button of nav.querySelectorAll('button')) {
-      button.setAttribute('aria-pressed', String(button.dataset.tab === tab));
-    }
-    if (reading !== null) {
-      const item = articles[reading];
-      screen.innerHTML = '<div class="reader"><header><strong>Leitura</strong><button type="button" class="close" data-close>Fechar</button></header><h3>' + item.title + '</h3><p class="author">' + item.author + '</p><p>' + item.body + '</p><a href="https://dev.to/" target="_blank" rel="noreferrer">Abrir no DEV</a></div>';
-      screen.querySelector('[data-close]').focus();
-      return;
-    }
-    const ids = tab === 'feed' ? articles.map((_, index) => index) : [...favorites].reverse();
-    const rows = ids.map(index => {
-      const item = articles[index];
-      const saved = favorites.has(index);
-      const cover = tab === 'feed' && item.cover ? '<div class="cover" aria-hidden="true"><div><span>›</span> ' + item.cover + '</div></div>' : '';
-      return '<article><button type="button" class="summary" data-read="' + index + '">' + cover + '<h3>' + item.title + '</h3><p class="author">' + item.author + '</p><p class="description">' + item.description + '</p></button><button type="button" class="favorite" data-favorite="' + index + '"><span aria-hidden="true">' + (saved ? '◆' : '◇') + '</span>' + (saved ? 'Remover dos salvos' : 'Favoritar') + '</button></article>';
-    });
-    screen.innerHTML = '<h2>' + (tab === 'feed' ? 'TechNews' : 'Salvos') + '</h2>' + (rows.length ? rows.join('') : '<div class="empty"><span class="tab-icon" aria-hidden="true">♧</span><strong>Nenhum artigo salvo</strong><p>Favorite um artigo no feed para ler o texto offline.</p></div>');
-  }
-  root.addEventListener('click', event => {
-    const button = event.target.closest('button');
-    if (!button) return;
-    if (button.dataset.tab) tab = button.dataset.tab;
-    if (button.dataset.read !== undefined) reading = Number(button.dataset.read);
-    if (button.hasAttribute('data-close')) {
-      const previous = reading;
-      reading = null;
-      render();
-      screen.querySelector('[data-read="' + previous + '"]')?.focus();
-      return;
-    }
-    if (button.dataset.favorite !== undefined) {
-      const index = Number(button.dataset.favorite);
-      if (favorites.has(index)) favorites.delete(index);
-      else favorites.add(index);
-      render();
-      (screen.querySelector('[data-favorite="' + index + '"]') ?? nav.querySelector('[data-tab="saved"]')).focus();
-      return;
-    }
-    render();
-  });
-  render();
-})();
-</script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171f1b">
+  <title>TechNews | Artigos de tecnologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="shell top">
+      <a class="brand" href="./"><span aria-hidden="true">›_</span> TechNews</a>
+      <nav aria-label="Seções">
+        <button type="button" data-view="feed" aria-pressed="true">Feed</button>
+        <button type="button" data-view="saved" aria-pressed="false">Salvos <span id="saved-count"></span></button>
+      </nav>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="intro" aria-labelledby="heading">
+      <p class="source"><span></span> DEV Community</p>
+      <h1 id="heading">Tecnologia em pauta<span>.</span></h1>
+      <p id="subtitle">Artigos de programação escritos pela comunidade.</p>
+    </section>
+    <section aria-label="Artigos">
+      <div id="articles"></div>
+      <div class="pagination">
+        <p id="status" role="status"></p>
+        <button type="button" id="load-more" class="pill" hidden>Carregar mais artigos</button>
+      </div>
+    </section>
+  </main>
+  <footer class="shell footer"><strong>TechNews</strong><a href="https://dev.to/">DEV Community</a></footer>
+  <dialog id="reader" aria-labelledby="reader-title">
+    <div class="reader-bar"><span>Leitura</span><form method="dialog"><button class="pill">Fechar</button></form></div>
+    <div class="reader-content">
+      <h2 id="reader-title"></h2>
+      <p id="reader-author"></p>
+      <p id="reader-status" role="status"></p>
+      <div id="reader-body"></div>
+      <a id="reader-link" target="_blank" rel="noopener noreferrer">Abrir artigo no DEV ↗</a>
+    </div>
+  </dialog>
+</body>
 </html>
