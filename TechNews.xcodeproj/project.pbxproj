@@ -1,0 +1,122 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+		100000000000000000000001 /* TechNews.swift in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 100000000000000000000002 /* TechNews.swift */;
+		};
+		100000000000000000000002 /* TechNews.swift */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = TechNews.swift;
+			sourceTree = "<group>";
+		};
+		100000000000000000000003 /* TechNews.app */ = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			path = TechNews.app;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		100000000000000000000004 = {
+			isa = PBXGroup;
+			children = (
+				100000000000000000000002 /* TechNews.swift */,
+				100000000000000000000005 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		100000000000000000000005 /* Products */ = {
+			isa = PBXGroup;
+			children = (100000000000000000000003 /* TechNews.app */,);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		100000000000000000000006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (100000000000000000000001 /* TechNews.swift in Sources */,);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		100000000000000000000007 /* TechNews */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10000000000000000000000A;
+			buildPhases = (100000000000000000000006 /* Sources */,);
+			buildRules = ();
+			dependencies = ();
+			name = TechNews;
+			productName = TechNews;
+			productReference = 100000000000000000000003 /* TechNews.app */;
+			productType = "com.apple.product-type.application";
+		};
+		100000000000000000000008 /* Project object */ = {
+			isa = PBXProject;
+			attributes = { BuildIndependentTargetsInParallel = 1; };
+			buildConfigurationList = 100000000000000000000009;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "pt-BR";
+			hasScannedForEncodings = 0;
+			knownRegions = ("pt-BR", Base);
+			mainGroup = 100000000000000000000004;
+			productRefGroup = 100000000000000000000005 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (100000000000000000000007 /* TechNews */,);
+		};
+		100000000000000000000009 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (10000000000000000000000B, 10000000000000000000000C,);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10000000000000000000000A = {
+			isa = XCConfigurationList;
+			buildConfigurations = (10000000000000000000000D, 10000000000000000000000E,);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10000000000000000000000B = {
+			isa = XCBuildConfiguration;
+			buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 16.0; SWIFT_VERSION = 5.0; };
+			name = Debug;
+		};
+		10000000000000000000000C = {
+			isa = XCBuildConfiguration;
+			buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 16.0; SWIFT_VERSION = 5.0; };
+			name = Release;
+		};
+		10000000000000000000000D = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codefeed.technews;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		10000000000000000000000E = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codefeed.technews;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+	};
+	rootObject = 100000000000000000000008 /* Project object */;
+}

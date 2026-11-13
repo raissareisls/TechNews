@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="416" height="660" viewBox="0 0 416 660" role="img" aria-label="Prévia do TechNews, tela Salvos">
+  <defs>
+    <linearGradient id="cover"><stop stop-color="#20283c"/><stop offset="1" stop-color="#33315c"/></linearGradient>
+    <path id="bookmark" d="M3 2h12v15l-6-4-6 4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    <path id="news" d="M2 3h14v14H2zM5 7h8m-8 3h8m-8 3h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </defs>
+  <style>
+    text {font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;fill:#161619;font-size:16px}
+    .muted {fill:#63636d;font-size:15px} .title {font-size:20px;font-weight:650}
+    .action,.selected {fill:#5e57cc} .purple {color:#5e57cc} .gray {color:#63636d}
+    .line {stroke:#dedee4} .tab {font-size:11px} .status {font-size:13px;font-weight:650}
+  </style>
+  <rect width="416" height="660" rx="24" fill="#f3f2fa"/>
+  <rect x="23" y="10" width="370" height="640" rx="32" fill="#fff" stroke="#dedee4"/>
+  <text x="47" y="38" class="status">9:41</text><path d="M328 36v-3m4 3v-5m4 5v-8m4 8V25m6 4q5-5 10 0m-8 3q3-3 6 0m-4 3h2m9-7h10v8h-10z" fill="none" stroke="#161619" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="44" y="94" style="font-size:34px;font-weight:700;letter-spacing:-1px">Salvos</text>
+  <text x="44" y="134" class="title">What happens when you</text><text x="44" y="158" class="title">await a Promise?</text>
+<text x="44" y="185" class="muted">Alex Morgan</text>
+<text x="44" y="209" class="muted">A practical look at how JavaScript handles</text><text x="44" y="230" class="muted">async work and schedules the next step.</text>
+<use href="#bookmark" x="44" y="247" class="purple"/><text x="68" y="261" class="action">Remover dos salvos</text><path d="M44 280H372" class="line"/>
+  <path d="M24 588H392" class="line"/>
+  <use href="#news" x="107" y="597" class="gray"/><text x="116" y="630" text-anchor="middle" class="tab muted">Feed</text>
+  <use href="#bookmark" x="291" y="597" class="purple"/><text x="300" y="630" text-anchor="middle" class="tab selected">Salvos</text>
+  <rect x="153" y="640" width="110" height="4" rx="2" fill="#161619"/>
+</svg>
