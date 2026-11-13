@@ -2,15 +2,21 @@
 
 Leitor nativo de artigos de programação do DEV Community. O app usa SwiftUI, arquitetura MVVM e a API pública do Dev.to, sem chave de API ou dependências externas.
 
-## Prévia da interface
+## Versão web
+
+[Abrir TechNews no GitHub Pages](https://raissareisls.github.io/TechNews/)
+
+O feed tem um layout responsivo com artigo em destaque, capas e tempo de leitura. A cada página, o site busca até 36 artigos reais do DEV Community. Use **Carregar mais artigos** para continuar. A aba **Salvos** guarda o texto dos favoritos neste navegador.
+
+O GitHub Pages publica a pasta `/docs` da branch `main`. A página usa `index.html`, `styles.css` e `app.js` nessa pasta.
+
+## Prévia original do app iOS
 
 | Feed | Salvos | Leitura |
 | --- | --- | --- |
 | ![Feed com capas e botão de favoritar](docs/images/feed.svg) | ![Lista de artigos favoritos](docs/images/salvos.svg) | ![Tela de leitura de um artigo](docs/images/leitura.svg) |
 
-As imagens representam a interface com artigos de exemplo. A execução do app nativo no iOS está pendente de validação.
-
-Para explorar a demo, abra `docs/index.html` no navegador. A página permite favoritar, remover e ler artigos de exemplo. Para compartilhar um endereço público, publique a pasta `docs` com o GitHub Pages e adicione o endereço publicado ao portfólio.
+As imagens mostram o protótipo original do app iOS com artigos de exemplo. A execução da versão atual do app nativo está pendente de validação.
 
 ## Executar
 

@@ -43,9 +43,14 @@ private enum ArticleError: LocalizedError {
 
 private enum DevAPI {
     private static let articlesURL = URL(string: "https://dev.to/api/articles")!
+    static let pageSize = 36
 
-    static func feed() async throws -> [Article] {
-        try await get([Article].self, from: articlesURL)
+    static func feed(page: Int) async throws -> [Article] {
+        let url = articlesURL.appending(queryItems: [
+            URLQueryItem(name: "page", value: String(page)),
+            URLQueryItem(name: "per_page", value: String(pageSize))
+        ])
+        return try await get([Article].self, from: url)
     }
 
     static func completeArticle(id: Int) async throws -> Article {
@@ -96,7 +101,9 @@ private final class NewsViewModel: ObservableObject {
     @Published var message: String?
 
     private let store = FavoritesStore()
-    private var isLoading = false
+    @Published private(set) var isLoading = false
+    @Published private(set) var hasMore = false
+    private var nextPage = 1
 
     init() {
         do {
@@ -106,22 +113,33 @@ private final class NewsViewModel: ObservableObject {
         }
     }
 
-    func loadFeed() async {
+    func loadFeed(append: Bool = false) async {
         guard !isLoading else { return }
+        let existing: [Article]
+        if append {
+            guard hasMore, case .success(let articles) = feed else { return }
+            existing = articles
+        } else {
+            existing = []
+        }
+        let page = append ? nextPage : 1
         isLoading = true
         defer { isLoading = false }
         let previous = feed
         if case .success = previous {} else { feed = .loading }
 
         do {
-            let articles = try await DevAPI.feed()
+            let articles = try await DevAPI.feed(page: page)
             try Task.checkCancellation()
-            feed = .success(articles)
+            var ids = Set(existing.map(\.id))
+            feed = .success(existing + articles.filter { ids.insert($0.id).inserted })
+            nextPage = page + 1
+            hasMore = articles.count == DevAPI.pageSize
         } catch {
             if Task.isCancelled {
                 feed = previous
             } else if case .success = previous {
-                message = "Não foi possível atualizar o feed. \(error.localizedDescription)"
+                message = "Não foi possível carregar o feed. \(error.localizedDescription)"
             } else {
                 feed = .failure(error.localizedDescription)
             }
@@ -223,7 +241,7 @@ private struct NewsView: View {
             }
             .tabItem { Label("Salvos", systemImage: "bookmark") }
         }
-        .tint(Color(red: 0.37, green: 0.34, blue: 0.80))
+        .tint(.green)
         .task {
             if case .idle = model.feed { await model.loadFeed() }
         }
@@ -257,36 +275,67 @@ private struct NewsView: View {
     }
 
     private func articleList(_ articles: [Article], showsCover: Bool) -> some View {
-        List(articles) { article in
-            let saved = model.savedArticle(id: article.id) != nil
-            let downloading = model.downloading.contains(article.id)
-
-            VStack(alignment: .leading, spacing: 10) {
-                Button {
-                    selectedArticle = model.savedArticle(id: article.id) ?? article
-                } label: {
-                    ArticleSummary(article: article, showsCover: showsCover)
+        List {
+            if showsCover {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("DEV Community")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                    Text("Tecnologia em pauta.")
+                        .font(.system(.largeTitle, design: .serif).weight(.semibold))
+                        .accessibilityAddTraits(.isHeader)
                 }
-                .buttonStyle(.plain)
-
-                Button {
-                    Task { await model.toggleFavorite(article) }
-                } label: {
-                    if downloading {
-                        HStack {
-                            ProgressView()
-                            Text("Salvando…")
-                        }
-                    } else {
-                        Label(saved ? "Remover dos salvos" : "Favoritar", systemImage: saved ? "bookmark.fill" : "bookmark")
-                    }
-                }
-                .buttonStyle(.borderless)
-                .disabled(downloading)
+                .padding(.vertical, 10)
             }
-            .padding(.vertical, 10)
+            ForEach(articles) { article in
+                articleRow(article, showsCover: showsCover, featured: showsCover && article.id == articles.first?.id)
+            }
+            if showsCover && model.hasMore {
+                Button {
+                    Task { await model.loadFeed(append: true) }
+                } label: {
+                    HStack {
+                        if model.isLoading { ProgressView() }
+                        Text(model.isLoading ? "Carregando artigos…" : "Carregar mais artigos")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .disabled(model.isLoading)
+                .padding(.vertical, 8)
+            }
         }
         .listStyle(.plain)
+    }
+
+    private func articleRow(_ article: Article, showsCover: Bool, featured: Bool) -> some View {
+        let saved = model.savedArticle(id: article.id) != nil
+        let downloading = model.downloading.contains(article.id)
+
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                selectedArticle = model.savedArticle(id: article.id) ?? article
+            } label: {
+                ArticleSummary(article: article, showsCover: showsCover, featured: featured)
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                Task { await model.toggleFavorite(article) }
+            } label: {
+                if downloading {
+                    HStack {
+                        ProgressView()
+                        Text("Salvando…")
+                    }
+                } else {
+                    Label(saved ? "Remover dos salvos" : "Favoritar", systemImage: saved ? "bookmark.fill" : "bookmark")
+                }
+            }
+            .buttonStyle(.bordered)
+            .disabled(downloading)
+        }
+        .padding(.vertical, 10)
     }
 
     private func status(_ title: String, icon: String, detail: String, canRetry: Bool = false) -> some View {
@@ -310,13 +359,14 @@ private struct NewsView: View {
 private struct ArticleSummary: View {
     let article: Article
     let showsCover: Bool
+    let featured: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if showsCover, let cover = article.coverImage {
                 Rectangle()
                     .fill(Color.secondary.opacity(0.12))
-                    .aspectRatio(2.4, contentMode: .fit)
+                    .aspectRatio(featured ? 1.8 : 2.4, contentMode: .fit)
                     .overlay {
                         AsyncImage(url: cover) { phase in
                             switch phase {
@@ -330,7 +380,7 @@ private struct ArticleSummary: View {
                     .accessibilityHidden(true)
             }
             Text(article.title)
-                .font(.title3.weight(.semibold))
+                .font(.system(featured ? .largeTitle : .title2, design: .serif).weight(.semibold))
                 .foregroundStyle(.primary)
             Text(article.user.name)
                 .font(.subheadline.weight(.medium))
@@ -362,7 +412,7 @@ private struct ReaderView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text(article.title).font(.largeTitle.bold())
+                Text(article.title).font(.system(.largeTitle, design: .serif).bold())
                     .accessibilityAddTraits(.isHeader)
                 Text(article.user.name).foregroundStyle(.secondary)
 
