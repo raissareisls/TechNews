@@ -16,7 +16,7 @@ Para explorar a demo, abra `docs/index.html` no navegador. A página permite fav
 
 **Xcode no Mac.** Abra `TechNews.xcodeproj`, escolha o esquema TechNews e execute em um simulador com iOS 16 ou posterior. Para instalar em um iPhone, selecione sua equipe em **Signing & Capabilities** e escolha o dispositivo como destino. Se a assinatura pedir um identificador exclusivo, ajuste o **Bundle Identifier**.
 
-**Swift Playgrounds no iPad ou Mac.** Crie um playground do tipo **App** e substitua os arquivos Swift de exemplo por `TechNews.swift`. O arquivo já inclui o ponto de entrada `@main`.
+**Swift Playgrounds no iPad ou Mac.** Crie um playground do tipo **App** e substitua os arquivos Swift de exemplo por `TechNews.swift`. O arquivo já inclui o ponto de entrada `@main`. O iPhone é um destino de execução do app. [Swift Playgrounds na Apple](https://developer.apple.com/swift-playground/)
 
 ## Fluxo do aplicativo
 
@@ -26,7 +26,7 @@ Para explorar a demo, abra `docs/index.html` no navegador. A página permite fav
 
 ## Arquitetura
 
-O código do app fica em `TechNews.swift`. O modelo `Article` mapeia o JSON da API. `DevAPI` faz as requisições com `URLSession` e `async/await`. `NewsViewModel` coordena o feed e os favoritos, e `ReaderViewModel` gerencia o carregamento do texto. As views observam esses estados. `FavoritesStore` codifica o array de artigos em JSON no `UserDefaults`.
+O código do app fica em `TechNews.swift`. `Article` mapeia o JSON da API. `HTTPClient` faz as requisições com `URLSession` e `async/await`, e `DevAPI` decodifica as respostas do DEV. `NewsViewModel` coordena o feed e os favoritos entre as janelas. `ReaderViewModel` prepara o Markdown para exibição e `CoverViewModel` gerencia o carregamento da capa. As views observam esses estados. `FavoritesStore` codifica o array de artigos em JSON no `UserDefaults`.
 
 ## Teste manual
 
